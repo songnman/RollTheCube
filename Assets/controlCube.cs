@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class controlCube : MonoBehaviour
+public class ControlCube : MonoBehaviour
 {
-	void Start()
-	{
-		
-	}
+
 	Vector3 touchStartPosition;
 
 	float touchStartTime;
@@ -67,50 +65,207 @@ public class controlCube : MonoBehaviour
 		}
 	}
 	public List<GameObject> edgeList = new List<GameObject>();
+	public List<GameObject> surfaceList = new List<GameObject>();	
+	void Start()
+	{
+		int edgeCount = 12;
+		for (int i = 0; i < edgeCount; i++)
+			edgeList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
+		
+		int surfaceCount = 6;
+		for (int i = 0; i < surfaceCount; i++)
+			surfaceList.Add(gameObject.transform.GetChild(1).GetChild(i).gameObject);
+
+		GetTriggerOnList();
+	}
+	public List<GameObject> edgeListTriggerOn =  new List<GameObject>();
+	public List<GameObject> surfaceListTriggerOn =  new List<GameObject>();
+	GameObject leftSurface, rightSurface, forwardSurface, backSurface, upSurface, downSurface;
+	GameObject center;
+	private void GetTriggerOnList()
+	{
+		edgeListTriggerOn.Clear();
+		surfaceListTriggerOn.Clear();
+		edgeListTriggerOn = new List<GameObject>();
+		surfaceListTriggerOn = new List<GameObject>();
+		foreach (var item in edgeList)
+		{
+			if (item.GetComponent<CubeEdge>().isTriggerOn)
+			{
+				edgeListTriggerOn.Add(item);
+			}
+		}
+		foreach (var item in surfaceList)
+		{
+			if (item.GetComponent<CubeEdge>().isTriggerOn)
+			{
+				surfaceListTriggerOn.Add(item);
+			}
+		}
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for(int i=0; i < surfaceList.Count; i++)
+			if(surfaceList[i].transform.position.x < center.transform.position.x)
+				center = surfaceList[i];
+		leftSurface = center;
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for(int i=0; i < surfaceList.Count; i++)
+			if(surfaceList[i].transform.position.x > center.transform.position.x)
+				center = surfaceList[i];
+		rightSurface = center;
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for(int i=0; i < surfaceList.Count; i++)
+			if(surfaceList[i].transform.position.y < center.transform.position.y)
+				center = surfaceList[i];
+		downSurface = center;
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for(int i=0; i < surfaceList.Count; i++)
+			if(surfaceList[i].transform.position.y > center.transform.position.y)
+				center = surfaceList[i];
+		upSurface = center;
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for(int i=0; i < surfaceList.Count; i++)
+			if(surfaceList[i].transform.position.z < center.transform.position.z)
+				center = surfaceList[i];
+		backSurface = center;
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for(int i=0; i < surfaceList.Count; i++)
+			if(surfaceList[i].transform.position.z > center.transform.position.z)
+				center = surfaceList[i];
+		forwardSurface = center;
+
+
+	}
+
 	public float angleForFlipCube;
 	bool isCubeRotate = false;
 IEnumerator FlipCube(Vector3 direction)
 {
+	yield return new WaitUntil(()=>!isCubeRotate);
+
+	int x = 15;
+	float y = 6f;
 	isCubeRotate = true;
-	int x = 40;
-	for(int i = 0; i < x; i++)
-	{
-		// cubeObj.GetComponent<Rigidbody>().angularVelocity = direction * 3;
-		
-		cubeObj.transform.RotateAround(edgeList[2].transform.localPosition,direction,3);
-		yield return new WaitForFixedUpdate();
-	}
-	yield return new WaitForSeconds(0.5f);
-	isCubeRotate = false;
+	GetTriggerOnList();
 	
+	
+
+	center = gameObject.transform.GetChild(0).gameObject;
+	if (direction == Vector3.forward && !leftSurface.GetComponent<CubeEdge>().isTriggerOn)
+	{
+		for (int i = 0; i < edgeListTriggerOn.Count; i++)
+			if (edgeListTriggerOn[i].transform.position.x < center.transform.position.x && edgeListTriggerOn[i].transform.position.y < 0)
+				center = edgeListTriggerOn[i];
+		
+		for (int i = 0; i < x; i++)
+		{
+			transform.RotateAround(center.transform.position, direction, y);
+			yield return new WaitForFixedUpdate();
+		}
+	}
+	else if (direction == Vector3.back && !rightSurface.GetComponent<CubeEdge>().isTriggerOn)
+	{
+		for (int i = 0; i < edgeListTriggerOn.Count; i++)
+			if (edgeListTriggerOn[i].transform.position.x > center.transform.position.x && edgeListTriggerOn[i].transform.position.y < 0)
+				center = edgeListTriggerOn[i];
+		
+		for (int i = 0; i < x; i++)
+		{
+			transform.RotateAround(center.transform.position, direction, y);
+			yield return new WaitForFixedUpdate();
+		}
+	}
+	else if (direction == Vector3.right && !forwardSurface.GetComponent<CubeEdge>().isTriggerOn)
+	{
+		for (int i = 0; i < edgeListTriggerOn.Count; i++)
+			if (edgeListTriggerOn[i].transform.position.z > center.transform.position.z && edgeListTriggerOn[i].transform.position.y < 0)
+				center = edgeListTriggerOn[i];
+		
+		for (int i = 0; i < x; i++)
+		{
+			transform.RotateAround(center.transform.position, direction, y);
+			yield return new WaitForFixedUpdate();
+		}
+	}
+	else if (direction == Vector3.left && !backSurface.GetComponent<CubeEdge>().isTriggerOn)
+	{
+		for (int i = 0; i < edgeListTriggerOn.Count; i++)
+			if (edgeListTriggerOn[i].transform.position.z < center.transform.position.z && edgeListTriggerOn[i].transform.position.y < 0)
+				center = edgeListTriggerOn[i];
+		
+		for (int i = 0; i < x; i++)
+		{
+			transform.RotateAround(center.transform.position, direction, y);
+			yield return new WaitForFixedUpdate();
+		}
+	}
+	
+
+
+	transform.Translate(Vector3.zero);
+	isCubeRotate = false;
+	// gameObject.GetComponent<Rigidbody>().freezeRotation = true;
 }
-public GameObject cubeObj;
+
+	public GameObject cubeObj;
 	void Update()
 	{
-		// if(Input.GetKeyDown(KeyCode.LeftArrow))
-		// {
-		// 	Debug.Log("KeyDown!");
-		// 	if(!isCubeRotate)
-		// 		StartCoroutine("FlipCube", Vector3.forward);
-		// }
-		// if(Input.GetKeyDown(KeyCode.RightArrow))
-		// {
-		// 	Debug.Log("KeyDown!");
-		// 	if(!isCubeRotate)
-		// 		StartCoroutine("FlipCube", Vector3.back);
-		// }
-		// if(Input.GetKeyDown(KeyCode.UpArrow))
-		// {
-		// 	Debug.Log("KeyDown!");
-		// 	if(!isCubeRotate)
-		// 		StartCoroutine("FlipCube", Vector3.right);
-		// }
-		// if(Input.GetKeyDown(KeyCode.DownArrow))
-		// {
-		// 	Debug.Log("KeyDown!");
-		// 	if(!isCubeRotate)
-		// 		StartCoroutine("FlipCube", Vector3.left);
-		// }
+		if(Input.GetKeyDown(KeyCode.F1))
+		{
+			GetTriggerOnList();
+			foreach (var item in edgeListTriggerOn)
+				Debug.Log(item);
+		}
+		if(Input.GetKeyDown(KeyCode.F2))
+		{
+			GetTriggerOnList();
+			foreach (var item in surfaceListTriggerOn)
+				Debug.Log(item);
+
+			Debug.Log("Left : " + leftSurface);
+			Debug.Log("Right : " + rightSurface);
+			Debug.Log("Down : " + downSurface);
+			Debug.Log("Up : " + upSurface);
+			Debug.Log("Back : " + backSurface);
+			Debug.Log("Forward : " + forwardSurface);
+
+		}
+		if(Input.GetKeyDown(KeyCode.F3))
+		{
+			SceneManager.LoadScene("SampleScene");
+		}
+		if(Input.GetKeyDown(KeyCode.F4))
+		{
+			transform.position = Vector3.zero;
+		}
+
+
+
+		if(Input.GetKeyDown(KeyCode.LeftArrow))
+		{
+			if(!isCubeRotate)
+				StartCoroutine("FlipCube", Vector3.forward);
+		}
+		if(Input.GetKeyDown(KeyCode.RightArrow))
+		{
+			if(!isCubeRotate)
+				StartCoroutine("FlipCube", Vector3.back);
+		}
+		if(Input.GetKeyDown(KeyCode.UpArrow))
+		{
+			if(!isCubeRotate)
+				StartCoroutine("FlipCube", Vector3.right);
+		}
+		if(Input.GetKeyDown(KeyCode.DownArrow))
+		{
+			if(!isCubeRotate)
+				StartCoroutine("FlipCube", Vector3.left);
+		}
 
 		foreach (Touch touch in Input.touches) 
 		{

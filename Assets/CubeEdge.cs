@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class CubeEdge : MonoBehaviour
 {
+	public bool isTriggerOn = false;
 	private void OnTriggerEnter(Collider other) 
 	{
-		Debug.Log("In : " + name);
+		
+		isTriggerOn = true;
+		// Debug.Log("In : " + name);
 	}
 	private void OnTriggerExit(Collider other) 
 	{
-		Debug.Log("Out : " + name);
+		isTriggerOn = false;
+		// Debug.Log("Out : " + name);
 	}
 }
