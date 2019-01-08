@@ -73,8 +73,8 @@ public class ControlCube : MonoBehaviour
 		// 	edgeList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
 		
 		// int surfaceCount = 6;
-		for (int i = 0; i < gameObject.transform.GetChild(1).childCount; i++)
-			surfaceList.Add(gameObject.transform.GetChild(1).GetChild(i).gameObject);
+		for (int i = 0; i < gameObject.transform.GetChild(0).childCount; i++)
+			surfaceList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
 
 		// SetSurfaceDirection();
 	}
@@ -211,7 +211,7 @@ public class ControlCube : MonoBehaviour
 				center = surfaceEdgeList[i];
 		rightEdge = center;
 		rightEdge.name = "RightEdge";
-		
+
 		center = gameObject.transform.GetChild(0).gameObject;
 		for (int i = 0; i < surfaceEdgeList.Count; i++)
 			if (surfaceEdgeList[i].transform.position.z < center.transform.position.z)
