@@ -102,7 +102,8 @@ public class ControlCube : MonoBehaviour
 				surfaceListTriggerOn.Add(item);
 			}
 		}
-
+		
+		//[2019-01-08 22:48:43] 정육면체의 6면에 맞춰서 방향을 재설정해줌.
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.x < center.transform.position.x)
@@ -152,8 +153,6 @@ IEnumerator FlipCube(Vector3 direction)
 	float y = 6f;
 	isCubeRotate = true;
 	GetTriggerOnList();
-	
-	
 
 	center = gameObject.transform.GetChild(0).gameObject;
 	if (direction == Vector3.forward && !leftSurface.GetComponent<CubeEdge>().isTriggerOn)
@@ -204,10 +203,7 @@ IEnumerator FlipCube(Vector3 direction)
 			yield return new WaitForFixedUpdate();
 		}
 	}
-	
-
-
-	transform.Translate(Vector3.zero);
+	// transform.position = new Vector3(transform.position.x,0,transform.position.z);
 	isCubeRotate = false;
 	// gameObject.GetComponent<Rigidbody>().freezeRotation = true;
 }
