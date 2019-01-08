@@ -68,158 +68,177 @@ public class ControlCube : MonoBehaviour
 	public List<GameObject> surfaceList = new List<GameObject>();	
 	void Start()
 	{
-		int edgeCount = 12;
-		for (int i = 0; i < edgeCount; i++)
-			edgeList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
+		// int edgeCount = 12;
+		// for (int i = 0; i < edgeCount; i++)
+		// 	edgeList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
 		
-		int surfaceCount = 6;
-		for (int i = 0; i < surfaceCount; i++)
+		// int surfaceCount = 6;
+		for (int i = 0; i < gameObject.transform.GetChild(1).childCount; i++)
 			surfaceList.Add(gameObject.transform.GetChild(1).GetChild(i).gameObject);
 
-		GetTriggerOnList();
+		// SetSurfaceDirection();
 	}
 	public List<GameObject> edgeListTriggerOn =  new List<GameObject>();
 	public List<GameObject> surfaceListTriggerOn =  new List<GameObject>();
 	GameObject leftSurface, rightSurface, forwardSurface, backSurface, upSurface, downSurface;
 	GameObject center;
-	private void GetTriggerOnList()
+	private void SetSurfaceDirection()
 	{
-		edgeListTriggerOn.Clear();
-		surfaceListTriggerOn.Clear();
-		edgeListTriggerOn = new List<GameObject>();
-		surfaceListTriggerOn = new List<GameObject>();
-		foreach (var item in edgeList)
-		{
-			if (item.GetComponent<CubeEdge>().isTriggerOn)
-			{
-				edgeListTriggerOn.Add(item);
-			}
-		}
-		foreach (var item in surfaceList)
-		{
-			if (item.GetComponent<CubeEdge>().isTriggerOn)
-			{
-				surfaceListTriggerOn.Add(item);
-			}
-		}
-		
 		//[2019-01-08 22:48:43] 정육면체의 6면에 맞춰서 방향을 재설정해줌.
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.x < center.transform.position.x)
 				center = surfaceList[i];
 		leftSurface = center;
+		leftSurface.name = "LeftSurface";
 
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.x > center.transform.position.x)
 				center = surfaceList[i];
 		rightSurface = center;
+		rightSurface.name = "RightSurface";
 
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.y < center.transform.position.y)
 				center = surfaceList[i];
 		downSurface = center;
+		downSurface.name = "DownSurface";
 
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.y > center.transform.position.y)
 				center = surfaceList[i];
 		upSurface = center;
+		upSurface.name = "UpSurface";
 
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.z < center.transform.position.z)
 				center = surfaceList[i];
 		backSurface = center;
-
+		backSurface.name = "BackSurface";
+		
 		center = gameObject.transform.GetChild(0).gameObject;
 		for(int i=0; i < surfaceList.Count; i++)
 			if(surfaceList[i].transform.position.z > center.transform.position.z)
 				center = surfaceList[i];
 		forwardSurface = center;
-
-
+		forwardSurface.name = "ForwardSurface";
 	}
-
-	public float angleForFlipCube;
 	bool isCubeRotate = false;
-IEnumerator FlipCube(Vector3 direction)
-{
-	yield return new WaitUntil(()=>!isCubeRotate);
+	public List<GameObject> surfaceEdgeList = new List<GameObject>();
+	GameObject back, rightEdge, forwardEdge, backEdge;
+	IEnumerator FlipCube(string direction)
+	{
+		yield return new WaitUntil(() => !isCubeRotate);
+		isCubeRotate = true;
 
-	int x = 15;
-	float y = 6f;
-	isCubeRotate = true;
-	GetTriggerOnList();
+		SetSurfaceDirection();
+		SetSurfaceEdgeDirection();
+		bool isDirectionBlock = false;
+		Vector3 rotateDirection = Vector3.zero;
+		Vector3 axisEdge = Vector3.zero;
+		if(direction == "Left")
+		{
+			rotateDirection = Vector3.forward;
+			axisEdge = back.transform.position;
+			if(leftSurface.GetComponent<CubeEdge>().isTriggerOn)
+				isDirectionBlock = true;
+		}
+		else if (direction == "Right")
+		{
+			rotateDirection = Vector3.back;
+			axisEdge = rightEdge.transform.position;
+			if(rightSurface.GetComponent<CubeEdge>().isTriggerOn)
+				isDirectionBlock = true;
+			
+		}
+		else if(direction =="Forward")
+		{
+			rotateDirection = Vector3.right;
+			axisEdge = forwardEdge.transform.position;
+			if(forwardSurface.GetComponent<CubeEdge>().isTriggerOn)
+				isDirectionBlock = true;
+		}
+		else if(direction =="Back")
+		{
+			rotateDirection = Vector3.left;
+			axisEdge = backEdge.transform.position;
+			if(backSurface.GetComponent<CubeEdge>().isTriggerOn)
+				isDirectionBlock = true;
+		}
+		else
+		{
+			Debug.Log("Error : Direction or Axis are Not Correct.");
+		}
 
-	center = gameObject.transform.GetChild(0).gameObject;
-	if (direction == Vector3.forward && !leftSurface.GetComponent<CubeEdge>().isTriggerOn)
-	{
-		for (int i = 0; i < edgeListTriggerOn.Count; i++)
-			if (edgeListTriggerOn[i].transform.position.x < center.transform.position.x && edgeListTriggerOn[i].transform.position.y < 0)
-				center = edgeListTriggerOn[i];
-		
-		for (int i = 0; i < x; i++)
+		if(!isDirectionBlock)
 		{
-			transform.RotateAround(center.transform.position, direction, y);
-			yield return new WaitForFixedUpdate();
+			int repeatCount = 15;
+			float rotateAngle = 6f;
+			for (int i = 0; i < repeatCount; i++)
+			{
+				transform.RotateAround(axisEdge, rotateDirection, rotateAngle);
+				yield return new WaitForFixedUpdate();
+			}
+			SetSurfaceDirection();
+			SetSurfaceEdgeDirection();
 		}
+
+		isCubeRotate = false;
 	}
-	else if (direction == Vector3.back && !rightSurface.GetComponent<CubeEdge>().isTriggerOn)
+
+	private void SetSurfaceEdgeDirection()
 	{
-		for (int i = 0; i < edgeListTriggerOn.Count; i++)
-			if (edgeListTriggerOn[i].transform.position.x > center.transform.position.x && edgeListTriggerOn[i].transform.position.y < 0)
-				center = edgeListTriggerOn[i];
-		
-		for (int i = 0; i < x; i++)
+		surfaceEdgeList.Clear();
+		for (int i = 0; i < downSurface.transform.childCount; i++)
 		{
-			transform.RotateAround(center.transform.position, direction, y);
-			yield return new WaitForFixedUpdate();
+			surfaceEdgeList.Add(downSurface.transform.GetChild(i).gameObject);
 		}
-	}
-	else if (direction == Vector3.right && !forwardSurface.GetComponent<CubeEdge>().isTriggerOn)
-	{
-		for (int i = 0; i < edgeListTriggerOn.Count; i++)
-			if (edgeListTriggerOn[i].transform.position.z > center.transform.position.z && edgeListTriggerOn[i].transform.position.y < 0)
-				center = edgeListTriggerOn[i];
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.x < center.transform.position.x)
+				center = surfaceEdgeList[i];
+		back = center;
+		back.name = "LeftEdge";
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.x > center.transform.position.x)
+				center = surfaceEdgeList[i];
+		rightEdge = center;
+		rightEdge.name = "RightEdge";
 		
-		for (int i = 0; i < x; i++)
-		{
-			transform.RotateAround(center.transform.position, direction, y);
-			yield return new WaitForFixedUpdate();
-		}
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.z < center.transform.position.z)
+				center = surfaceEdgeList[i];
+		backEdge = center;
+		backEdge.name = "BackEdge";
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.z > center.transform.position.z)
+				center = surfaceEdgeList[i];
+		forwardEdge = center;
+		forwardEdge.name = "ForwardEdge";
 	}
-	else if (direction == Vector3.left && !backSurface.GetComponent<CubeEdge>().isTriggerOn)
-	{
-		for (int i = 0; i < edgeListTriggerOn.Count; i++)
-			if (edgeListTriggerOn[i].transform.position.z < center.transform.position.z && edgeListTriggerOn[i].transform.position.y < 0)
-				center = edgeListTriggerOn[i];
-		
-		for (int i = 0; i < x; i++)
-		{
-			transform.RotateAround(center.transform.position, direction, y);
-			yield return new WaitForFixedUpdate();
-		}
-	}
-	// transform.position = new Vector3(transform.position.x,0,transform.position.z);
-	isCubeRotate = false;
-	// gameObject.GetComponent<Rigidbody>().freezeRotation = true;
-}
 
 	public GameObject cubeObj;
 	void Update()
 	{
 		if(Input.GetKeyDown(KeyCode.F1))
 		{
-			GetTriggerOnList();
+			SetSurfaceDirection();
 			foreach (var item in edgeListTriggerOn)
 				Debug.Log(item);
 		}
 		if(Input.GetKeyDown(KeyCode.F2))
 		{
-			GetTriggerOnList();
+			SetSurfaceDirection();
 			foreach (var item in surfaceListTriggerOn)
 				Debug.Log(item);
 
@@ -245,22 +264,22 @@ IEnumerator FlipCube(Vector3 direction)
 		if(Input.GetKeyDown(KeyCode.LeftArrow))
 		{
 			if(!isCubeRotate)
-				StartCoroutine("FlipCube", Vector3.forward);
+				StartCoroutine("FlipCube", "Left");
 		}
 		if(Input.GetKeyDown(KeyCode.RightArrow))
 		{
 			if(!isCubeRotate)
-				StartCoroutine("FlipCube", Vector3.back);
+				StartCoroutine("FlipCube", "Right");
 		}
 		if(Input.GetKeyDown(KeyCode.UpArrow))
 		{
 			if(!isCubeRotate)
-				StartCoroutine("FlipCube", Vector3.right);
+				StartCoroutine("FlipCube", "Forward");
 		}
 		if(Input.GetKeyDown(KeyCode.DownArrow))
 		{
 			if(!isCubeRotate)
-				StartCoroutine("FlipCube", Vector3.left);
+				StartCoroutine("FlipCube", "Back");
 		}
 
 		foreach (Touch touch in Input.touches) 
