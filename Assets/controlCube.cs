@@ -7,64 +7,97 @@ public class ControlCube : MonoBehaviour
 {
 
 	Vector3 touchStartPosition;
-
 	float touchStartTime;
 	bool couldBeSwipe = false;
-	float minSwipeDist = 5f, maxSwipeTime = .5f;
+    float minSwipeDist = 5f, maxSwipeTime = .5f, comfortZone = 12f;
+	
 	private void HandleTouch(int touchFingerId, Vector3 touchPosition, TouchPhase touchPhase) 
 	{
-		// Rigidbody rb = cubeObj.GetComponent<Rigidbody>();
 		if((Input.touchCount > 0 || touchFingerId > 0)) 
 		{
-			Vector3 touchPos = touchPosition;
 			switch (touchPhase)
 			{
 				case TouchPhase.Began:
-					touchStartPosition = touchPosition;
 					couldBeSwipe = true;
+					touchStartPosition = touchPosition;
 					touchStartTime = Time.time;
-					break;
-
-				case TouchPhase.Moved:
-					
-					if(couldBeSwipe)
-					{
-						// rb.angularVelocity = touchStartPosition - touchPosition;
-					}
-
-					// if(Mathf.Abs(touchPosition.x - touchStartPosition.x) > comfortZone || Time.time - touchStartTime > maxSwipeTime)
-					// 	couldBeSwipe = false;
-					
-				// if(Vector2.Distance(touchStartPosition,touchPos) > 4 && !interActionSc.isFever)
-				// 	Instantiate(particlePrefab, touchPos, Quaternion.identity);
-				// Debug.Log(Vector2.Distance(touchStartPosition,touchPos));
 				break;
+
+				// case TouchPhase.Moved:
+				// 	// if(couldBeSwipe)
+				// 	// {
+				// 	// 	if(touchPosition.x - touchStartPosition.x > 5 && !isCubeRotate)
+				// 	// 	{
+				// 	// 		StartCoroutine("FlipCube", "Right");
+				// 	// 		couldBeSwipe = false;
+				// 	// 	}
+				// 	// 	else if(touchPosition.x - touchStartPosition.x < -5 && !isCubeRotate)
+				// 	// 	{
+				// 	// 		StartCoroutine("FlipCube", "Left");
+				// 	// 		couldBeSwipe = false;
+				// 	// 	}
+				// 	// 	else if(touchPosition.y - touchStartPosition.y > 5 && !isCubeRotate)
+				// 	// 	{
+				// 	// 		StartCoroutine("FlipCube", "Forward");
+				// 	// 		couldBeSwipe = false;
+				// 	// 	}
+				// 	// 	else if(touchPosition.y - touchStartPosition.y < -5 && !isCubeRotate)
+				// 	// 	{
+				// 	// 		StartCoroutine("FlipCube", "Back");
+				// 	// 		couldBeSwipe = false;
+				// 	// 	}
+				// 	// }
+				// 	// if(Mathf.Abs(touchPosition.x - touchStartPosition.x) > comfortZone || Time.time - touchStartTime > maxSwipeTime)
+				// 	//  	couldBeSwipe = false;
+				// break;
 				
-				// [2018-11-08 04:04:02]  Stationary 판정이 강해서 계속 couldBeSwipe Bool이 false를 유지해버린다.
-				// case TouchPhase.Stationary:
-				//     couldBeSwipe = false;
-				//     break;
+				// // [2018-11-08 04:04:02]  Stationary 판정이 강해서 계속 couldBeSwipe Bool이 false를 유지해버린다.
+				// // case TouchPhase.Stationary:
+				// //     couldBeSwipe = false;
+				// //     break;
 
 				case TouchPhase.Ended:
-					// rb.angularVelocity = new Vector3(0,0,0);
-					float swipeTime = Time.time - touchStartTime;
-					float swipeDist = (touchPosition - touchStartPosition).magnitude;
-					
-					if (couldBeSwipe && (swipeTime < maxSwipeTime) && (swipeDist > minSwipeDist))
+					if(couldBeSwipe)
 					{
-						var swipeDirection = Mathf.Sign(touchStartPosition.x - touchPosition.x);
-						Debug.Log(swipeDirection);
-						Debug.Log("Swipe On !");
-						if(swipeDirection < 0)
-							Debug.Log("Direction : 0");
+						if(touchPosition.x - touchStartPosition.x > 2 && !isCubeRotate)
+						{
+							StartCoroutine("FlipCube", "Right");
+							couldBeSwipe = false;
+						}
+						else if(touchPosition.x - touchStartPosition.x < -2 && !isCubeRotate)
+						{
+							StartCoroutine("FlipCube", "Left");
+							couldBeSwipe = false;
+						}
+						else if(touchPosition.y - touchStartPosition.y > 1.5 && !isCubeRotate)
+						{
+							StartCoroutine("FlipCube", "Forward");
+							couldBeSwipe = false;
+						}
+						else if(touchPosition.y - touchStartPosition.y < -1.5 && !isCubeRotate)
+						{
+							StartCoroutine("FlipCube", "Back");
+							couldBeSwipe = false;
+						}
 					}
+					
+					// float swipeTime = Time.time - touchStartTime;
+					// float swipeDist = (touchPosition - touchStartPosition).magnitude;
+					// if (couldBeSwipe && (swipeTime < maxSwipeTime) && (swipeDist > minSwipeDist))
+					// {
+					// 	var swipeDirection = Mathf.Sign(touchStartPosition.x - touchPosition.x);
+					// 	Debug.Log(swipeDirection);
+					// 	Debug.Log("Swipe On !");
+					// 	if(swipeDirection < 0)
+					// 		Debug.Log("Direction : 0");
+					// }
 					// if(Vector2.Distance(touchStartPosition,touchPos) > 4 && !interActionSc.isFever)
 					//     FeverStart();
 					break;
 			}
 		}
 	}
-	public List<GameObject> edgeList = new List<GameObject>();
+	// public List<GameObject> edgeList = new List<GameObject>();
 	public List<GameObject> surfaceList = new List<GameObject>();	
 	void Start()
 	{
@@ -78,7 +111,7 @@ public class ControlCube : MonoBehaviour
 
 		// SetSurfaceDirection();
 	}
-	public List<GameObject> edgeListTriggerOn =  new List<GameObject>();
+	// public List<GameObject> edgeListTriggerOn =  new List<GameObject>();
 	public List<GameObject> surfaceListTriggerOn =  new List<GameObject>();
 	GameObject leftSurface, rightSurface, forwardSurface, backSurface, upSurface, downSurface;
 	GameObject center;
@@ -127,9 +160,45 @@ public class ControlCube : MonoBehaviour
 		forwardSurface = center;
 		forwardSurface.name = "ForwardSurface";
 	}
-	bool isCubeRotate = false;
 	public List<GameObject> surfaceEdgeList = new List<GameObject>();
-	GameObject back, rightEdge, forwardEdge, backEdge;
+	GameObject leftEdge, rightEdge, forwardEdge, backEdge;
+	private void SetSurfaceEdgeDirection()
+	{
+		surfaceEdgeList.Clear();
+		for (int i = 0; i < downSurface.transform.childCount; i++)
+		{
+			surfaceEdgeList.Add(downSurface.transform.GetChild(i).gameObject);
+		}
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.x < center.transform.position.x)
+				center = surfaceEdgeList[i];
+		leftEdge = center;
+		leftEdge.name = "LeftEdge";
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.x > center.transform.position.x)
+				center = surfaceEdgeList[i];
+		rightEdge = center;
+		rightEdge.name = "RightEdge";
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.z < center.transform.position.z)
+				center = surfaceEdgeList[i];
+		backEdge = center;
+		backEdge.name = "BackEdge";
+
+		center = gameObject.transform.GetChild(0).gameObject;
+		for (int i = 0; i < surfaceEdgeList.Count; i++)
+			if (surfaceEdgeList[i].transform.position.z > center.transform.position.z)
+				center = surfaceEdgeList[i];
+		forwardEdge = center;
+		forwardEdge.name = "ForwardEdge";
+	}
+	public bool isCubeRotate = false;
 	IEnumerator FlipCube(string direction)
 	{
 		yield return new WaitUntil(() => !isCubeRotate);
@@ -143,7 +212,7 @@ public class ControlCube : MonoBehaviour
 		if(direction == "Left")
 		{
 			rotateDirection = Vector3.forward;
-			axisEdge = back.transform.position;
+			axisEdge = leftEdge.transform.position;
 			if(leftSurface.GetComponent<CubeEdge>().isTriggerOn)
 				isDirectionBlock = true;
 		}
@@ -189,94 +258,33 @@ public class ControlCube : MonoBehaviour
 
 		isCubeRotate = false;
 	}
-
-	private void SetSurfaceEdgeDirection()
-	{
-		surfaceEdgeList.Clear();
-		for (int i = 0; i < downSurface.transform.childCount; i++)
-		{
-			surfaceEdgeList.Add(downSurface.transform.GetChild(i).gameObject);
-		}
-
-		center = gameObject.transform.GetChild(0).gameObject;
-		for (int i = 0; i < surfaceEdgeList.Count; i++)
-			if (surfaceEdgeList[i].transform.position.x < center.transform.position.x)
-				center = surfaceEdgeList[i];
-		back = center;
-		back.name = "LeftEdge";
-
-		center = gameObject.transform.GetChild(0).gameObject;
-		for (int i = 0; i < surfaceEdgeList.Count; i++)
-			if (surfaceEdgeList[i].transform.position.x > center.transform.position.x)
-				center = surfaceEdgeList[i];
-		rightEdge = center;
-		rightEdge.name = "RightEdge";
-
-		center = gameObject.transform.GetChild(0).gameObject;
-		for (int i = 0; i < surfaceEdgeList.Count; i++)
-			if (surfaceEdgeList[i].transform.position.z < center.transform.position.z)
-				center = surfaceEdgeList[i];
-		backEdge = center;
-		backEdge.name = "BackEdge";
-
-		center = gameObject.transform.GetChild(0).gameObject;
-		for (int i = 0; i < surfaceEdgeList.Count; i++)
-			if (surfaceEdgeList[i].transform.position.z > center.transform.position.z)
-				center = surfaceEdgeList[i];
-		forwardEdge = center;
-		forwardEdge.name = "ForwardEdge";
-	}
-
-	public GameObject cubeObj;
 	void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.F1))
-		{
-			SetSurfaceDirection();
-			foreach (var item in edgeListTriggerOn)
-				Debug.Log(item);
-		}
-		if(Input.GetKeyDown(KeyCode.F2))
-		{
-			SetSurfaceDirection();
-			foreach (var item in surfaceListTriggerOn)
-				Debug.Log(item);
-
-			Debug.Log("Left : " + leftSurface);
-			Debug.Log("Right : " + rightSurface);
-			Debug.Log("Down : " + downSurface);
-			Debug.Log("Up : " + upSurface);
-			Debug.Log("Back : " + backSurface);
-			Debug.Log("Forward : " + forwardSurface);
-
-		}
-		if(Input.GetKeyDown(KeyCode.F3))
+		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -10 || transform.position.y > 10)
 		{
 			SceneManager.LoadScene("SampleScene");
 		}
-		if(Input.GetKeyDown(KeyCode.F4))
+		if(Input.GetKeyDown(KeyCode.F2))
 		{
 			transform.position = Vector3.zero;
 		}
-
-
 
 		if(Input.GetKeyDown(KeyCode.LeftArrow))
 		{
 			if(!isCubeRotate)
 				StartCoroutine("FlipCube", "Left");
 		}
-		if(Input.GetKeyDown(KeyCode.RightArrow))
+		else if(Input.GetKeyDown(KeyCode.RightArrow))
 		{
 			if(!isCubeRotate)
 				StartCoroutine("FlipCube", "Right");
 		}
-		if(Input.GetKeyDown(KeyCode.UpArrow))
+		else if(Input.GetKeyDown(KeyCode.UpArrow))
 		{
 			if(!isCubeRotate)
 				StartCoroutine("FlipCube", "Forward");
 		}
-		if(Input.GetKeyDown(KeyCode.DownArrow))
+		else if(Input.GetKeyDown(KeyCode.DownArrow))
 		{
 			if(!isCubeRotate)
 				StartCoroutine("FlipCube", "Back");
@@ -302,23 +310,6 @@ public class ControlCube : MonoBehaviour
 			{
 				HandleTouch(10, Camera.main.ScreenToWorldPoint(Input.mousePosition), TouchPhase.Ended);
 			}
-			
 		}
-		
 	}
-
-	// private void FixedUpdate() 
-	// {
-	// 	if (Input.GetAxisRaw ("Horizontal") != 0) 
-	// 	{
-	// 		cubeObj.GetComponent<Rigidbody>().angularVelocity = Vector3.right * Input.GetAxisRaw ("Horizontal") * 2;
-	// 		// cubeObj.transform.Translate(Vector3.right * Input.GetAxisRaw ("Horizontal") * 0.1f);
-	// 	} 
-	// 	else if (Input.GetAxisRaw ("Vertical") != 0) 
-	// 	{
-	// 		cubeObj.GetComponent<Rigidbody>().angularVelocity = Vector3.forward * Input.GetAxisRaw ("Vertical") * 2;
-	// 		// cubeObj.transform.Translate(Vector3.forward * Input.GetAxisRaw ("Vertical") * 0.1f);
-	// 	}
-	// }
-
 }

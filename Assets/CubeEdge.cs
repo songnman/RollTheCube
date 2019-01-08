@@ -8,9 +8,8 @@ public class CubeEdge : MonoBehaviour
 	public Vector3 worldPositon;
 	private void OnTriggerEnter(Collider other) 
 	{
-		
-		isTriggerOn = true;
-		// Debug.Log("In : " + name);
+		if(other.tag == "Wall")
+			isTriggerOn = true;
 		worldPositon = transform.position;
 	}
 	private void OnTriggerExit(Collider other) 
