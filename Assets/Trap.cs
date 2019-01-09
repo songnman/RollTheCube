@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ground : MonoBehaviour
+public class Trap : MonoBehaviour
 {
 	public int collisionCount = 0;
 	private void OnTriggerEnter(Collider other) 
 	{
 		if(other.tag == "Cube")
 		{
-			StartCoroutine("Trap", other);
+			StartCoroutine("FallingTrap", other);
 			// other.transform.position = other.transform.position - new Vector3(0,0.1f,0);
 			Debug.Log("!");
 		}
@@ -20,7 +20,7 @@ public class Ground : MonoBehaviour
 		Debug.Log(collisionCount);
 	}
 
-	IEnumerator Trap(Collider other)
+	IEnumerator FallingTrap(Collider other)
 	{
 		for (int i = 0; i < 10; i++)
 		{

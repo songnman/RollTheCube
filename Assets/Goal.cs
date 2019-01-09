@@ -8,7 +8,7 @@ public class Goal : MonoBehaviour
 	{
 		if(other.tag == "Cube")
 		{
-			StartCoroutine("Trap", other);
+			StartCoroutine("RollTheCube", other);
 			// other.transform.position = other.transform.position - new Vector3(0,0.1f,0);
 
 			Debug.Log("!");
@@ -19,7 +19,7 @@ public class Goal : MonoBehaviour
 
 	}
 
-	IEnumerator Trap(Collider other)
+	IEnumerator RollTheCube(Collider other)
 	{
 		other.GetComponent<ControlCube>().isCubeRotate = true;
 		other.GetComponent<Rigidbody>().useGravity = false;
@@ -31,13 +31,13 @@ public class Goal : MonoBehaviour
 		}
 		for (int i = 0; i < 10; i++)
 		{
-			other.GetComponent<Rigidbody>().AddForce(new Vector3(0,10,0),ForceMode.Acceleration);
+			other.GetComponent<Rigidbody>().AddForce(new Vector3(0,20,0),ForceMode.Acceleration);
 			yield return new WaitForFixedUpdate();
 		}
 		// yield return new WaitForSeconds(1);
 		for (int i = 0; i < 100; i++)
 		{
-			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 1000);
+			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 10000);
 			yield return new WaitForFixedUpdate();
 		}
 	}
