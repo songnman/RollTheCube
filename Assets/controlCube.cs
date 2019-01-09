@@ -30,6 +30,9 @@ public class ControlCube : MonoBehaviour
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
 			GameObject cubeGraphic = transform.GetChild(1).gameObject;
+			float xPosition = touchPosition.x - touchStartPosition.x;
+			float yPosition = touchPosition.y - touchStartPosition.y;
+
 			// int checkXY = 0;
 			switch (touchPhase)
 			{
@@ -53,14 +56,20 @@ public class ControlCube : MonoBehaviour
 					rotateDirection.z = -touchDirection.x;
 					rotateDirection.x = touchDirection.y;
 					float rotateAngle = 1f;
-					rotateAngle = Vector3.Distance(touchPosition, touchStartPosition);
-					Debug.Log(rotateAngle);
+					rotateAngle = Vector3.Distance(touchPosition, touchStartPosition) * 2;
+					// Debug.Log(rotateAngle);
+					Debug.Log(xPosition +" : "+ yPosition);
 					if(couldBeSwipe && checkXY == 0 )
 					{
-						if(Mathf.Abs(touchPosition.x - touchStartPosition.x) > .5f)
+						cubeGraphic.transform.rotation = Quaternion.Euler((touchStartPosition.y - touchPosition.y) * -5, 0, (touchStartPosition.x - touchPosition.x) * 5);
+						if		( xPosition * yPosition < -0.08 )
 							checkXY = 1;
-						else if(Mathf.Abs(touchPosition.y - touchStartPosition.y) > .3f)
+						else if	( xPosition * yPosition > 0.08 )
 							checkXY = 2;
+						else
+						{
+							StartCoroutine("ResetCubeGraphicRotation");
+						}
 					}
 					
 					if(checkXY != 0)
@@ -131,8 +140,6 @@ public class ControlCube : MonoBehaviour
 
 					// if(couldBeSwipe)
 					// {
-					float xPosition = touchPosition.x - touchStartPosition.x;
-					float yPosition = touchPosition.y - touchStartPosition.y;
 					if(checkXY == 1)
 					{
 						if(xPosition > 2 || cubeGraphic.transform.rotation.z < -0.15)
@@ -152,12 +159,12 @@ public class ControlCube : MonoBehaviour
 					}
 					else if(checkXY == 2)
 					{
-						if(yPosition > 1.5 || cubeGraphic.transform.rotation.x > 0.15)
+						if(yPosition > 1.5f || cubeGraphic.transform.rotation.x > 0.15)
 						{
 							StartCoroutine("FlipCube", "Forward");
 							couldBeSwipe = false;
 						}
-						else if(yPosition < -1.5 || cubeGraphic.transform.rotation.x < -0.15)
+						else if(yPosition < -1.5f || cubeGraphic.transform.rotation.x < -0.15)
 						{
 							StartCoroutine("FlipCube", "Back");
 							couldBeSwipe = false;
