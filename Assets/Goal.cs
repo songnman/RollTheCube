@@ -35,9 +35,9 @@ public class Goal : MonoBehaviour
 			yield return new WaitForFixedUpdate();
 		}
 		// yield return new WaitForSeconds(1);
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 200; i++)
 		{
-			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 10000);
+			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 100);
 			yield return new WaitForFixedUpdate();
 		}
 	}

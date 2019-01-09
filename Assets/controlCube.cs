@@ -10,90 +10,165 @@ public class ControlCube : MonoBehaviour
 	float touchStartTime;
 	bool couldBeSwipe = false;
     float minSwipeDist = 5f, maxSwipeTime = .5f, comfortZone = 12f;
-	
+	float maxAngle, curAngle;
+	IEnumerator ResetCubeGraphicRotation()
+	{
+		GameObject cubeGraphic = transform.GetChild(1).gameObject;
+		int x = 4;
+		for(int i = 0; i < x; i++ )
+		{
+			cubeGraphic.transform.rotation = Quaternion.Lerp(cubeGraphic.transform.rotation, Quaternion.Euler(0,0,0), i * 0.25f);
+			yield return new WaitForFixedUpdate();
+		}
+
+	}
+	int checkXY;
 	private void HandleTouch(int touchFingerId, Vector3 touchPosition, TouchPhase touchPhase) 
 	{
-		if((Input.touchCount > 0 || touchFingerId > 0)) 
+		if((Input.touchCount > 0 || touchFingerId > 0) && !isCubeRotate)
 		{
+			SetSurfaceDirection();
+			SetSurfaceEdgeDirection();
+			GameObject cubeGraphic = transform.GetChild(1).gameObject;
+			// int checkXY = 0;
 			switch (touchPhase)
 			{
 				case TouchPhase.Began:
 					couldBeSwipe = true;
 					touchStartPosition = touchPosition;
 					touchStartTime = Time.time;
+					maxAngle = 10;
+					curAngle = 0;
+					checkXY = 0;
+					StartCoroutine("ResetCubeGraphicRotation");
+					cubeGraphic.transform.localPosition = Vector3.zero;
 				break;
 
-				// case TouchPhase.Moved:
-				// 	// if(couldBeSwipe)
-				// 	// {
-				// 	// 	if(touchPosition.x - touchStartPosition.x > 5 && !isCubeRotate)
-				// 	// 	{
-				// 	// 		StartCoroutine("FlipCube", "Right");
-				// 	// 		couldBeSwipe = false;
-				// 	// 	}
-				// 	// 	else if(touchPosition.x - touchStartPosition.x < -5 && !isCubeRotate)
-				// 	// 	{
-				// 	// 		StartCoroutine("FlipCube", "Left");
-				// 	// 		couldBeSwipe = false;
-				// 	// 	}
-				// 	// 	else if(touchPosition.y - touchStartPosition.y > 5 && !isCubeRotate)
-				// 	// 	{
-				// 	// 		StartCoroutine("FlipCube", "Forward");
-				// 	// 		couldBeSwipe = false;
-				// 	// 	}
-				// 	// 	else if(touchPosition.y - touchStartPosition.y < -5 && !isCubeRotate)
-				// 	// 	{
-				// 	// 		StartCoroutine("FlipCube", "Back");
-				// 	// 		couldBeSwipe = false;
-				// 	// 	}
-				// 	// }
-				// 	// if(Mathf.Abs(touchPosition.x - touchStartPosition.x) > comfortZone || Time.time - touchStartTime > maxSwipeTime)
-				// 	//  	couldBeSwipe = false;
-				// break;
-				
-				// // [2018-11-08 04:04:02]  Stationary 판정이 강해서 계속 couldBeSwipe Bool이 false를 유지해버린다.
-				// // case TouchPhase.Stationary:
-				// //     couldBeSwipe = false;
-				// //     break;
-
-				case TouchPhase.Ended:
-					if(couldBeSwipe)
+				case TouchPhase.Moved:
+					Vector3 touchDirection = touchPosition - touchStartPosition;
+					Vector3 rotateDirection;
+					Vector3 axisEdge = downSurface.transform.position;
+					
+					rotateDirection.y = 0;
+					rotateDirection.z = -touchDirection.x;
+					rotateDirection.x = touchDirection.y;
+					float rotateAngle = 1f;
+					rotateAngle = Vector3.Distance(touchPosition, touchStartPosition);
+					Debug.Log(rotateAngle);
+					if(couldBeSwipe && checkXY == 0 )
 					{
-						if(touchPosition.x - touchStartPosition.x > 2 && !isCubeRotate)
+						if(Mathf.Abs(touchPosition.x - touchStartPosition.x) > .5f)
+							checkXY = 1;
+						else if(Mathf.Abs(touchPosition.y - touchStartPosition.y) > .3f)
+							checkXY = 2;
+					}
+					
+					if(checkXY != 0)
+					{
+						if(checkXY == 1)
+						{
+						if(touchPosition.x - touchStartPosition.x > 0)
+							if(cubeGraphic.transform.rotation.z > -0.2)
+								cubeGraphic.transform.RotateAround(axisEdge, Vector3.back, rotateAngle);
+						if(touchPosition.x - touchStartPosition.x < 0)
+							if(cubeGraphic.transform.rotation.z < 0.2)
+								cubeGraphic.transform.RotateAround(axisEdge, Vector3.forward, rotateAngle);
+						}
+						else if(checkXY == 2)
+						{
+						if(touchPosition.y - touchStartPosition.y > 0)
+							if(cubeGraphic.transform.rotation.x < 0.2)
+								cubeGraphic.transform.RotateAround(axisEdge, Vector3.right, rotateAngle);
+						if(touchPosition.y - touchStartPosition.y < 0)
+							if(cubeGraphic.transform.rotation.x > -0.2)
+								cubeGraphic.transform.RotateAround(axisEdge, Vector3.left, rotateAngle);
+						}
+						// if(checkXY == 1)
+						// {
+						// 	cubeGraphic.transform.rotation = Quaternion.Euler(0, 0, (touchStartPosition.x - touchPosition.x) * 5);
+						// }
+						// if(checkXY == 2)
+						// {
+						// 	cubeGraphic.transform.rotation = Quaternion.Euler((touchStartPosition.y - touchPosition.y) * -5, 0,0);
+
+						// }
+						// cubeGraphic.transform.rotation = Quaternion.Euler((touchStartPosition.y - touchPosition.y) * -5, 0, (touchStartPosition.x - touchPosition.x) * 5);
+						// cubeGraphic.transform.position = new Vector3(cubeGraphic.transform.position.x,-0.2f + Vector3.Distance(touchStartPosition,touchPosition) * 0.01f,cubeGraphic.transform.position.z);
+					}
+
+					// if(couldBeSwipe)
+					// {
+					// 	if(touchPosition.x - touchStartPosition.x > 5 && !isCubeRotate)
+					// 	{
+					// 		StartCoroutine("FlipCube", "Right");
+					// 		couldBeSwipe = false;
+					// 	}
+					// 	else if(touchPosition.x - touchStartPosition.x < -5 && !isCubeRotate)
+					// 	{
+					// 		StartCoroutine("FlipCube", "Left");
+					// 		couldBeSwipe = false;
+					// 	}
+					// 	else if(touchPosition.y - touchStartPosition.y > 5 && !isCubeRotate)
+					// 	{
+					// 		StartCoroutine("FlipCube", "Forward");
+					// 		couldBeSwipe = false;
+					// 	}
+					// 	else if(touchPosition.y - touchStartPosition.y < -5 && !isCubeRotate)
+					// 	{
+					// 		StartCoroutine("FlipCube", "Back");
+					// 		couldBeSwipe = false;
+					// 	}
+					// }
+					// if(Mathf.Abs(touchPosition.x - touchStartPosition.x) > comfortZone || Time.time - touchStartTime > maxSwipeTime)
+					//  	couldBeSwipe = false;
+				break;
+				
+				case TouchPhase.Ended:
+					couldBeSwipe = false;
+					float holdTime = Time.time - touchStartTime;
+					cubeGraphic.transform.localPosition = Vector3.zero;
+					// cubeGraphic.transform.rotation = Quaternion.Lerp(cubeGraphic.transform.rotation, Quaternion.Euler(0,0,0),0.1f);
+
+					// if(couldBeSwipe)
+					// {
+					float xPosition = touchPosition.x - touchStartPosition.x;
+					float yPosition = touchPosition.y - touchStartPosition.y;
+					if(checkXY == 1)
+					{
+						if(xPosition > 2 || cubeGraphic.transform.rotation.z < -0.15)
 						{
 							StartCoroutine("FlipCube", "Right");
 							couldBeSwipe = false;
 						}
-						else if(touchPosition.x - touchStartPosition.x < -2 && !isCubeRotate)
+						else if(xPosition < -2 || cubeGraphic.transform.rotation.z > 0.15)
 						{
 							StartCoroutine("FlipCube", "Left");
 							couldBeSwipe = false;
 						}
-						else if(touchPosition.y - touchStartPosition.y > 1.5 && !isCubeRotate)
+						else
+						{
+							StartCoroutine("ResetCubeGraphicRotation");
+						}
+					}
+					else if(checkXY == 2)
+					{
+						if(yPosition > 1.5 || cubeGraphic.transform.rotation.x > 0.15)
 						{
 							StartCoroutine("FlipCube", "Forward");
 							couldBeSwipe = false;
 						}
-						else if(touchPosition.y - touchStartPosition.y < -1.5 && !isCubeRotate)
+						else if(yPosition < -1.5 || cubeGraphic.transform.rotation.x < -0.15)
 						{
 							StartCoroutine("FlipCube", "Back");
 							couldBeSwipe = false;
 						}
+						else
+						{
+							StartCoroutine("ResetCubeGraphicRotation");
+						}
 					}
-					
-					// float swipeTime = Time.time - touchStartTime;
-					// float swipeDist = (touchPosition - touchStartPosition).magnitude;
-					// if (couldBeSwipe && (swipeTime < maxSwipeTime) && (swipeDist > minSwipeDist))
-					// {
-					// 	var swipeDirection = Mathf.Sign(touchStartPosition.x - touchPosition.x);
-					// 	Debug.Log(swipeDirection);
-					// 	Debug.Log("Swipe On !");
-					// 	if(swipeDirection < 0)
-					// 		Debug.Log("Direction : 0");
-					// }
-					// if(Vector2.Distance(touchStartPosition,touchPos) > 4 && !interActionSc.isFever)
-					//     FeverStart();
-					break;
+					checkXY = 0;
+				break;
 			}
 		}
 	}
@@ -108,6 +183,9 @@ public class ControlCube : MonoBehaviour
 		// int surfaceCount = 6;
 		for (int i = 0; i < gameObject.transform.GetChild(0).childCount; i++)
 			surfaceList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
+
+		SetSurfaceDirection();
+		SetSurfaceEdgeDirection();
 
 		// SetSurfaceDirection();
 	}
@@ -201,6 +279,7 @@ public class ControlCube : MonoBehaviour
 	public bool isCubeRotate = false;
 	IEnumerator FlipCube(string direction)
 	{
+
 		yield return new WaitUntil(() => !isCubeRotate);
 		isCubeRotate = true;
 
@@ -245,8 +324,8 @@ public class ControlCube : MonoBehaviour
 
 		if(!isDirectionBlock)
 		{
-			int repeatCount = 15;
-			float rotateAngle = 6f;
+			int repeatCount = 9;
+			float rotateAngle = 10f;
 			for (int i = 0; i < repeatCount; i++)
 			{
 				transform.RotateAround(axisEdge, rotateDirection, rotateAngle);
@@ -255,12 +334,16 @@ public class ControlCube : MonoBehaviour
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
 		}
-
+		transform.rotation = Quaternion.Euler(0,0,0);
 		isCubeRotate = false;
+		yield return StartCoroutine("ResetCubeGraphicRotation");
+		
+		// StartCoroutine("ResetCubeGraphicRotation");
+		// transform.GetChild(1).rotation = Quaternion.Euler(0,0,0);
 	}
 	void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -10 || transform.position.y > 10)
+		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -10 || transform.position.y > 15)
 		{
 			SceneManager.LoadScene("SampleScene");
 		}

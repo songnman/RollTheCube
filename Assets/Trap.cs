@@ -24,8 +24,8 @@ public class Trap : MonoBehaviour
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			other.transform.position = other.transform.position - new Vector3(0,0.05f,0);
-			yield return null;
+			other.transform.position = other.transform.position - new Vector3(0,0.2f,0);
+			yield return new WaitForFixedUpdate();
 		}
 	}
 }
