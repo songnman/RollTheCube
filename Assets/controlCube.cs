@@ -23,13 +23,14 @@ public class ControlCube : MonoBehaviour
 
 	}
 	int checkXY;
+	GameObject cubeGraphic;
+
 	private void HandleTouch(int touchFingerId, Vector3 touchPosition, TouchPhase touchPhase) 
 	{
 		if((Input.touchCount > 0 || touchFingerId > 0) && !isCubeRotate)
 		{
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
-			GameObject cubeGraphic = transform.GetChild(1).gameObject;
 			float xPosition = touchPosition.x - touchStartPosition.x;
 			float yPosition = touchPosition.y - touchStartPosition.y;
 
@@ -58,7 +59,7 @@ public class ControlCube : MonoBehaviour
 					float rotateAngle = 1f;
 					rotateAngle = Vector3.Distance(touchPosition, touchStartPosition) * 2;
 					// Debug.Log(rotateAngle);
-					Debug.Log(xPosition +" : "+ yPosition);
+					// Debug.Log(xPosition +" : "+ yPosition);
 					if(couldBeSwipe && checkXY == 0 )
 					{
 						cubeGraphic.transform.rotation = Quaternion.Euler((touchStartPosition.y - touchPosition.y) * -5, 0, (touchStartPosition.x - touchPosition.x) * 5);
@@ -183,6 +184,7 @@ public class ControlCube : MonoBehaviour
 	public List<GameObject> surfaceList = new List<GameObject>();	
 	void Start()
 	{
+		cubeGraphic = transform.GetChild(1).gameObject;
 		// int edgeCount = 12;
 		// for (int i = 0; i < edgeCount; i++)
 		// 	edgeList.Add(gameObject.transform.GetChild(0).GetChild(i).gameObject);
@@ -299,29 +301,28 @@ public class ControlCube : MonoBehaviour
 		{
 			rotateDirection = Vector3.forward;
 			axisEdge = leftEdge.transform.position;
-			if(leftSurface.GetComponent<CubeEdge>().isTriggerOn)
+			if(leftSurface.GetComponent<CubeEdge>().triggerCount > 0)
 				isDirectionBlock = true;
 		}
 		else if (direction == "Right")
 		{
 			rotateDirection = Vector3.back;
 			axisEdge = rightEdge.transform.position;
-			if(rightSurface.GetComponent<CubeEdge>().isTriggerOn)
+			if(rightSurface.GetComponent<CubeEdge>().triggerCount > 0)
 				isDirectionBlock = true;
-			
 		}
 		else if(direction =="Forward")
 		{
 			rotateDirection = Vector3.right;
 			axisEdge = forwardEdge.transform.position;
-			if(forwardSurface.GetComponent<CubeEdge>().isTriggerOn)
+			if(forwardSurface.GetComponent<CubeEdge>().triggerCount > 0)
 				isDirectionBlock = true;
 		}
 		else if(direction =="Back")
 		{
 			rotateDirection = Vector3.left;
 			axisEdge = backEdge.transform.position;
-			if(backSurface.GetComponent<CubeEdge>().isTriggerOn)
+			if(backSurface.GetComponent<CubeEdge>().triggerCount > 0)
 				isDirectionBlock = true;
 		}
 		else
@@ -341,6 +342,17 @@ public class ControlCube : MonoBehaviour
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
 		}
+		else
+		{
+			int repeatCount = 5;
+			for (int i = 0; i < repeatCount; i++)
+			{
+				cubeGraphic.transform.localPosition = Random.insideUnitSphere * 0.1f;
+				yield return new WaitForFixedUpdate();
+
+			}
+			cubeGraphic.transform.localPosition = Vector3.zero;
+		}
 		transform.rotation = Quaternion.Euler(0,0,0);
 		isCubeRotate = false;
 		yield return StartCoroutine("ResetCubeGraphicRotation");
@@ -352,7 +364,7 @@ public class ControlCube : MonoBehaviour
 	{
 		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -10 || transform.position.y > 15)
 		{
-			SceneManager.LoadScene("SampleScene");
+			SceneManager.LoadScene("Level2");
 		}
 		if(Input.GetKeyDown(KeyCode.F2))
 		{
