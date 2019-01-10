@@ -355,6 +355,7 @@ public class ControlCube : MonoBehaviour
 			cubeGraphic.transform.localPosition = Vector3.zero;
 		}
 		transform.rotation = Quaternion.Euler(0,0,0);
+		yield return new WaitForSeconds(0.01f);
 		isCubeRotate = false;
 		yield return StartCoroutine("ResetCubeGraphicRotation");
 		
