@@ -139,40 +139,41 @@ public class ControlCube : MonoBehaviour
 					cubeGraphic.transform.localPosition = Vector3.zero;
 					// cubeGraphic.transform.rotation = Quaternion.Lerp(cubeGraphic.transform.rotation, Quaternion.Euler(0,0,0),0.1f);
 
-					// if(couldBeSwipe)
-					// {
-					if(checkXY == 1)
+					if(isCubeOnLand)
 					{
-						if(xPosition > 2 || cubeGraphic.transform.rotation.z < -0.15)
+						if(checkXY == 1)
 						{
-							StartCoroutine("FlipCube", "Right");
-							couldBeSwipe = false;
+							if(xPosition > 2 || cubeGraphic.transform.rotation.z < -0.15)
+							{
+								StartCoroutine("FlipCube", "Right");
+								couldBeSwipe = false;
+							}
+							else if(xPosition < -2 || cubeGraphic.transform.rotation.z > 0.15)
+							{
+								StartCoroutine("FlipCube", "Left");
+								couldBeSwipe = false;
+							}
+							else
+							{
+								StartCoroutine("ResetCubeGraphicRotation");
+							}
 						}
-						else if(xPosition < -2 || cubeGraphic.transform.rotation.z > 0.15)
+						else if(checkXY == 2)
 						{
-							StartCoroutine("FlipCube", "Left");
-							couldBeSwipe = false;
-						}
-						else
-						{
-							StartCoroutine("ResetCubeGraphicRotation");
-						}
-					}
-					else if(checkXY == 2)
-					{
-						if(yPosition > 1.5f || cubeGraphic.transform.rotation.x > 0.15)
-						{
-							StartCoroutine("FlipCube", "Forward");
-							couldBeSwipe = false;
-						}
-						else if(yPosition < -1.5f || cubeGraphic.transform.rotation.x < -0.15)
-						{
-							StartCoroutine("FlipCube", "Back");
-							couldBeSwipe = false;
-						}
-						else
-						{
-							StartCoroutine("ResetCubeGraphicRotation");
+							if(yPosition > 1.5f || cubeGraphic.transform.rotation.x > 0.15)
+							{
+								StartCoroutine("FlipCube", "Forward");
+								couldBeSwipe = false;
+							}
+							else if(yPosition < -1.5f || cubeGraphic.transform.rotation.x < -0.15)
+							{
+								StartCoroutine("FlipCube", "Back");
+								couldBeSwipe = false;
+							}
+							else
+							{
+								StartCoroutine("ResetCubeGraphicRotation");
+							}
 						}
 					}
 					checkXY = 0;
@@ -182,8 +183,11 @@ public class ControlCube : MonoBehaviour
 	}
 	// public List<GameObject> edgeList = new List<GameObject>();
 	public List<GameObject> surfaceList = new List<GameObject>();	
+	Vector3 originalCubePos;
 	void Start()
 	{
+		transform.position += new Vector3(0,10,0);
+		originalCubePos = transform.position;
 		cubeGraphic = transform.GetChild(1).gameObject;
 		// int edgeCount = 12;
 		// for (int i = 0; i < edgeCount; i++)
@@ -286,10 +290,11 @@ public class ControlCube : MonoBehaviour
 		forwardEdge.name = "ForwardEdge";
 	}
 	public bool isCubeRotate = false;
+	public bool isCubeOnLand = false;
 	IEnumerator FlipCube(string direction)
 	{
-
-		yield return new WaitUntil(() => !isCubeRotate);
+		// yield return new WaitUntil(() => isCubeOnLand);
+		// yield return new WaitUntil(() => !isCubeRotate);
 		isCubeRotate = true;
 
 		SetSurfaceDirection();
@@ -362,34 +367,47 @@ public class ControlCube : MonoBehaviour
 	}
 	void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -10 || transform.position.y > 15)
+		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -15 )
 		{
-			SceneManager.LoadScene("Level2");
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
-		if(Input.GetKeyDown(KeyCode.F2))
+		if(Input.GetKeyDown(KeyCode.F2) || transform.position.y > 15)
 		{
-			transform.position = Vector3.zero;
+			if(SceneManager.GetActiveScene().name == "Level1")
+				SceneManager.LoadScene("Level2");
+			else if(SceneManager.GetActiveScene().name == "Level2")
+				Application.Quit();
+			else
+				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 
-		if(Input.GetKeyDown(KeyCode.LeftArrow))
+		if(transform.position.y < -0.2 && transform.position.y > -0.3)
+			isCubeOnLand = true;
+		else
+			isCubeOnLand = false;
+
+		if(isCubeOnLand && !isCubeRotate)
 		{
-			if(!isCubeRotate)
+			if(Input.GetKeyDown(KeyCode.LeftArrow))
+			{
+				isCubeRotate = true;
 				StartCoroutine("FlipCube", "Left");
-		}
-		else if(Input.GetKeyDown(KeyCode.RightArrow))
-		{
-			if(!isCubeRotate)
+			}
+			else if(Input.GetKeyDown(KeyCode.RightArrow))
+			{
+				isCubeRotate = true;
 				StartCoroutine("FlipCube", "Right");
-		}
-		else if(Input.GetKeyDown(KeyCode.UpArrow))
-		{
-			if(!isCubeRotate)
+			}
+			else if(Input.GetKeyDown(KeyCode.UpArrow))
+			{
+				isCubeRotate = true;
 				StartCoroutine("FlipCube", "Forward");
-		}
-		else if(Input.GetKeyDown(KeyCode.DownArrow))
-		{
-			if(!isCubeRotate)
+			}
+			else if(Input.GetKeyDown(KeyCode.DownArrow))
+			{
+				isCubeRotate = true;
 				StartCoroutine("FlipCube", "Back");
+			}
 		}
 
 		foreach (Touch touch in Input.touches) 

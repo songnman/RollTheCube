@@ -14,13 +14,28 @@ public class CubeEdge : MonoBehaviour
 			isTriggerOn = true;
 			triggerCount++;
 		}
-		worldPositon = transform.position;
-		Debug.Log(gameObject.name + " to " + other);
+		// if(other.tag == "Land")
+		// {
+		// 	transform.parent.parent.GetComponent<ControlCube>().isCubeOnLand = true;
+		// }
+		// worldPositon = transform.position;
+		// Debug.Log(gameObject.name + " to " + other);
 	}
 	private void OnTriggerExit(Collider other) 
 	{
-		isTriggerOn = false;
-		triggerCount--;
-		// Debug.Log("Out : " + name);
+		if(other.tag == "Wall")
+		{
+			isTriggerOn = false;
+			triggerCount--;
+			// Debug.Log("Out : " + name);
+		}
+		// if(other.tag == "Land")
+		// {
+		// 	transform.parent.parent.GetComponent<ControlCube>().isCubeOnLand = false;
+		// }
+		// worldPositon = transform.position;
+		// Debug.Log(gameObject.name + " to " + other);
+
+		
 	}
 }

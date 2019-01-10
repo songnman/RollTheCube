@@ -9,11 +9,21 @@ public class Trap : MonoBehaviour
 	{
 		if(other.tag == "Cube")
 		{
+			gameObject.GetComponent<Rigidbody>().useGravity = true;
 			StartCoroutine("FallingTrap", other);
 			// other.transform.position = other.transform.position - new Vector3(0,0.1f,0);
 			Debug.Log("!");
 		}
 	}
+	// private void OncollisionEnter(Collider other) 
+	// {
+	// 	if(other.tag == "Cube")
+	// 	{
+	// 		StartCoroutine("FallingTrap", other);
+	// 		// other.transform.position = other.transform.position - new Vector3(0,0.1f,0);
+	// 		Debug.Log("!");
+	// 	}
+	// }
 	private void OnTiriggerExit(Collision other) 
 	{
 		collisionCount--;
@@ -24,7 +34,8 @@ public class Trap : MonoBehaviour
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			other.transform.position = other.transform.position - new Vector3(0,0.2f,0);
+			other.transform.position = other.transform.position - new Vector3(0,0.1f,0);
+			// other.GetComponent<Rigidbody>().AddForce(new Vector3(0,-100,0),ForceMode.Acceleration);
 			yield return new WaitForFixedUpdate();
 		}
 	}
