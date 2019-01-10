@@ -13,9 +13,9 @@ public class ControlCube : MonoBehaviour
 	float maxAngle, curAngle;
 	IEnumerator ResetCubeGraphicRotation()
 	{
-		GameObject cubeGraphic = transform.GetChild(1).gameObject;
-		int x = 4;
-		for(int i = 0; i < x; i++ )
+		// GameObject cubeGraphic = transform.GetChild(1).gameObject;
+		int repeat = 4;
+		for(int i = 0; i < repeat; i++ )
 		{
 			cubeGraphic.transform.rotation = Quaternion.Lerp(cubeGraphic.transform.rotation, Quaternion.Euler(0,0,0), i * 0.25f);
 			yield return new WaitForFixedUpdate();
@@ -44,7 +44,7 @@ public class ControlCube : MonoBehaviour
 					maxAngle = 10;
 					curAngle = 0;
 					checkXY = 0;
-					StartCoroutine("ResetCubeGraphicRotation");
+					// StartCoroutine("ResetCubeGraphicRotation");
 					cubeGraphic.transform.localPosition = Vector3.zero;
 				break;
 
@@ -135,8 +135,9 @@ public class ControlCube : MonoBehaviour
 				
 				case TouchPhase.Ended:
 					couldBeSwipe = false;
-					float holdTime = Time.time - touchStartTime;
 					cubeGraphic.transform.localPosition = Vector3.zero;
+					// float holdTime = Time.time - touchStartTime;
+					
 					// cubeGraphic.transform.rotation = Quaternion.Lerp(cubeGraphic.transform.rotation, Quaternion.Euler(0,0,0),0.1f);
 
 					if(isCubeOnLand)
@@ -146,12 +147,10 @@ public class ControlCube : MonoBehaviour
 							if(xPosition > 2 || cubeGraphic.transform.rotation.z < -0.15)
 							{
 								StartCoroutine("FlipCube", "Right");
-								couldBeSwipe = false;
 							}
 							else if(xPosition < -2 || cubeGraphic.transform.rotation.z > 0.15)
 							{
 								StartCoroutine("FlipCube", "Left");
-								couldBeSwipe = false;
 							}
 							else
 							{
@@ -163,12 +162,10 @@ public class ControlCube : MonoBehaviour
 							if(yPosition > 1.5f || cubeGraphic.transform.rotation.x > 0.15)
 							{
 								StartCoroutine("FlipCube", "Forward");
-								couldBeSwipe = false;
 							}
 							else if(yPosition < -1.5f || cubeGraphic.transform.rotation.x < -0.15)
 							{
 								StartCoroutine("FlipCube", "Back");
-								couldBeSwipe = false;
 							}
 							else
 							{
@@ -296,7 +293,6 @@ public class ControlCube : MonoBehaviour
 		// yield return new WaitUntil(() => isCubeOnLand);
 		// yield return new WaitUntil(() => !isCubeRotate);
 		isCubeRotate = true;
-
 		SetSurfaceDirection();
 		SetSurfaceEdgeDirection();
 		bool isDirectionBlock = false;
@@ -376,9 +372,11 @@ public class ControlCube : MonoBehaviour
 			if(SceneManager.GetActiveScene().name == "Level1")
 				SceneManager.LoadScene("Level2");
 			else if(SceneManager.GetActiveScene().name == "Level2")
-				Application.Quit();
+				SceneManager.LoadScene("Level3");
+			else if(SceneManager.GetActiveScene().name == "Level3")
+				SceneManager.LoadScene("Level4");
 			else
-				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+				Application.Quit();
 		}
 
 		if(transform.position.y < -0.2 && transform.position.y > -0.3)
