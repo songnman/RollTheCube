@@ -26,6 +26,9 @@ public class Goal : MonoBehaviour
 
 	IEnumerator RollTheCube(Collider other)
 	{
+		gameObject.GetComponent<MeshRenderer>().enabled = false;
+		gameObject.transform.GetChild(0).gameObject.SetActive(false);
+
 		other.GetComponent<ControlCube>().isCubeRotate = true;
 		other.GetComponent<Rigidbody>().useGravity = false;
 		other.GetComponent<Rigidbody>().freezeRotation = false;
@@ -39,12 +42,15 @@ public class Goal : MonoBehaviour
 			other.GetComponent<Rigidbody>().AddForce(new Vector3(0,30,0),ForceMode.Acceleration);
 			yield return new WaitForFixedUpdate();
 		}
-		gameObject.SetActive(false);
-		for (int i = 0; i < 200; i++)
+		// yield return new WaitForSeconds(0.2f);
+		// yield return new WaitUntil( () => other.transform.position.y > 0.8);
+		for (int i = 0; i < 100; i++)
 		{
-			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 100);
+			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 500,ForceMode.Acceleration);
 			yield return new WaitForFixedUpdate();
 		}
+
+		// gameObject.SetActive(false);
 	}
 	float curTime;
 	Vector3 originalPos;

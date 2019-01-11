@@ -14,12 +14,6 @@ public class CubeEdge : MonoBehaviour
 			isTriggerOn = true;
 			triggerCount++;
 		}
-		// if(other.tag == "Land")
-		// {
-		// 	transform.parent.parent.GetComponent<ControlCube>().isCubeOnLand = true;
-		// }
-		// worldPositon = transform.position;
-		// Debug.Log(gameObject.name + " to " + other);
 	}
 	private void OnTriggerExit(Collider other) 
 	{
@@ -27,15 +21,6 @@ public class CubeEdge : MonoBehaviour
 		{
 			isTriggerOn = false;
 			triggerCount--;
-			// Debug.Log("Out : " + name);
 		}
-		// if(other.tag == "Land")
-		// {
-		// 	transform.parent.parent.GetComponent<ControlCube>().isCubeOnLand = false;
-		// }
-		// worldPositon = transform.position;
-		// Debug.Log(gameObject.name + " to " + other);
-
-		
 	}
 }

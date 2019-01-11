@@ -62,7 +62,7 @@ public class ControlCube : MonoBehaviour
 					// Debug.Log(xPosition +" : "+ yPosition);
 					if(couldBeSwipe && checkXY == 0 )
 					{
-						cubeGraphic.transform.rotation = Quaternion.Euler((touchStartPosition.y - touchPosition.y) * -5, 0, (touchStartPosition.x - touchPosition.x) * 5);
+						cubeGraphic.transform.rotation = Quaternion.Euler((touchStartPosition.y - touchPosition.y) * -10, 0, (touchStartPosition.x - touchPosition.x) * 10);
 						if		( xPosition * yPosition < -0.08 )
 							checkXY = 1;
 						else if	( xPosition * yPosition > 0.08 )
@@ -136,6 +136,8 @@ public class ControlCube : MonoBehaviour
 				case TouchPhase.Ended:
 					couldBeSwipe = false;
 					cubeGraphic.transform.localPosition = Vector3.zero;
+
+
 					// float holdTime = Time.time - touchStartTime;
 					
 					// cubeGraphic.transform.rotation = Quaternion.Lerp(cubeGraphic.transform.rotation, Quaternion.Euler(0,0,0),0.1f);
@@ -172,6 +174,10 @@ public class ControlCube : MonoBehaviour
 								StartCoroutine("ResetCubeGraphicRotation");
 							}
 						}
+					}
+					else
+					{
+						StartCoroutine("ResetCubeGraphicRotation");
 					}
 					checkXY = 0;
 				break;
@@ -355,7 +361,7 @@ public class ControlCube : MonoBehaviour
 			cubeGraphic.transform.localPosition = Vector3.zero;
 		}
 		transform.rotation = Quaternion.Euler(0,0,0);
-		yield return new WaitForSeconds(0.01f);
+		// yield return new WaitForSeconds(0.02f);
 		isCubeRotate = false;
 		yield return StartCoroutine("ResetCubeGraphicRotation");
 		
