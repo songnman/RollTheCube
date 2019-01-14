@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ControlCube : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class ControlCube : MonoBehaviour
 	bool couldBeSwipe = false;
     float minSwipeDist = 5f, maxSwipeTime = .5f, comfortZone = 12f;
 	float maxAngle, curAngle;
+	int moveCount;
+	Text moveCountText;
+	GameObject UICube;
 	IEnumerator ResetCubeGraphicRotation()
 	{
 		// GameObject cubeGraphic = transform.GetChild(1).gameObject;
@@ -189,6 +193,8 @@ public class ControlCube : MonoBehaviour
 	Vector3 originalCubePos;
 	void Start()
 	{
+		UICube = GameObject.Find("UICube");
+		moveCountText = UICube.transform.GetChild(1).GetComponent<Text>();
 		transform.position += new Vector3(0,10,0);
 		originalCubePos = transform.position;
 		cubeGraphic = transform.GetChild(1).gameObject;
@@ -344,14 +350,17 @@ public class ControlCube : MonoBehaviour
 			for (int i = 0; i < repeatCount; i++)
 			{
 				transform.RotateAround(axisEdge, rotateDirection, rotateAngle);
+				UICube.transform.GetChild(0).Rotate(new Vector3(rotateAngle,0,0));
 				yield return new WaitForFixedUpdate();
 			}
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
+			moveCount++;
+			moveCountText.text = moveCount.ToString();
 		}
 		else
 		{
-			int repeatCount = 5;
+			int repeatCount = 10;
 			for (int i = 0; i < repeatCount; i++)
 			{
 				cubeGraphic.transform.localPosition = Random.insideUnitSphere * 0.1f;

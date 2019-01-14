@@ -28,24 +28,23 @@ public class Goal : MonoBehaviour
 	{
 		gameObject.GetComponent<MeshRenderer>().enabled = false;
 		gameObject.transform.GetChild(0).gameObject.SetActive(false);
-
+		gameObject.transform.GetChild(1).gameObject.SetActive(false);
 		other.GetComponent<ControlCube>().isCubeRotate = true;
 		other.GetComponent<Rigidbody>().useGravity = false;
 		other.GetComponent<Rigidbody>().freezeRotation = false;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			other.transform.position = other.transform.position + new Vector3(0,0.1f,0);
 			yield return new WaitForFixedUpdate();
 		}
-		for (int i = 0; i < 10; i++)
-		{
-			other.GetComponent<Rigidbody>().AddForce(new Vector3(0,30,0),ForceMode.Acceleration);
-			yield return new WaitForFixedUpdate();
-		}
-		// yield return new WaitForSeconds(0.2f);
-		// yield return new WaitUntil( () => other.transform.position.y > 0.8);
+		// for (int i = 0; i < 10; i++)
+		// {
+		// 	other.GetComponent<Rigidbody>().AddForce(new Vector3(0,30,0),ForceMode.Acceleration);
+		// 	yield return new WaitForFixedUpdate();
+		// }
 		for (int i = 0; i < 100; i++)
 		{
+			other.GetComponent<Rigidbody>().AddForce(new Vector3(0,10,0),ForceMode.Acceleration);
 			other.GetComponent<Rigidbody>().AddTorque(Vector3.up * 500,ForceMode.Acceleration);
 			yield return new WaitForFixedUpdate();
 		}
