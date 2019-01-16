@@ -12,9 +12,6 @@ public class ControlCube : MonoBehaviour
 	bool couldBeSwipe = false;
     float minSwipeDist = 5f, maxSwipeTime = .5f, comfortZone = 12f;
 	float maxAngle, curAngle;
-	int moveCount;
-	Text moveCountText;
-	GameObject UICube;
 	IEnumerator ResetCubeGraphicRotation()
 	{
 		// GameObject cubeGraphic = transform.GetChild(1).gameObject;
@@ -31,7 +28,7 @@ public class ControlCube : MonoBehaviour
 
 	private void HandleTouch(int touchFingerId, Vector3 touchPosition, TouchPhase touchPhase) 
 	{
-		if((Input.touchCount > 0 || touchFingerId > 0) && !isCubeRotate)
+		if((Input.touchCount > 0 || touchFingerId > 0) && !isCubeRotate && moveCountControlSc.MoveCount > 0)
 		{
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
@@ -191,10 +188,10 @@ public class ControlCube : MonoBehaviour
 	// public List<GameObject> edgeList = new List<GameObject>();
 	public List<GameObject> surfaceList = new List<GameObject>();	
 	Vector3 originalCubePos;
+	MoveCountControl moveCountControlSc;
 	void Start()
 	{
-		UICube = GameObject.Find("UICube");
-		moveCountText = UICube.transform.GetChild(1).GetComponent<Text>();
+		moveCountControlSc = GameObject.Find("Main").GetComponent<MoveCountControl>();
 		transform.position += new Vector3(0,10,0);
 		originalCubePos = transform.position;
 		cubeGraphic = transform.GetChild(1).gameObject;
@@ -347,16 +344,25 @@ public class ControlCube : MonoBehaviour
 		{
 			int repeatCount = 9;
 			float rotateAngle = 10f;
+			Light cubeLight = transform.GetChild(1).GetChild(0).GetComponent<Light>();
+			ParticleSystem cubeParticle = transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
+			ParticleSystem.MainModule main = cubeParticle.main;
+
+			moveCountControlSc.MoveCube();
+			cubeLight.intensity = (5f * moveCountControlSc.MoveCount / (float)moveCountControlSc.maxMoveCount);
+			// main.startSize = (1.5f * moveCountControlSc.MoveCount / moveCountControlSc.maxMoveCount);
+			cubeParticle.transform.localScale = new Vector3(1,1,1) * moveCountControlSc.MoveCount / moveCountControlSc.maxMoveCount;
 			for (int i = 0; i < repeatCount; i++)
 			{
 				transform.RotateAround(axisEdge, rotateDirection, rotateAngle);
-				UICube.transform.GetChild(0).Rotate(new Vector3(rotateAngle,0,0));
+				moveCountControlSc.UICube.transform.GetChild(0).Rotate(new Vector3(rotateAngle,0,0));
 				yield return new WaitForFixedUpdate();
 			}
 			SetSurfaceDirection();
 			SetSurfaceEdgeDirection();
-			moveCount++;
-			moveCountText.text = moveCount.ToString();
+			
+			if(moveCountControlSc.MoveCount < 1 && !MoveCountControl.isLevelComplete && !moveCountControlSc.isLevelFailed) //[2019-01-15 03:39:37] 남은턴 계산하는부분.
+				moveCountControlSc.StartCoroutine("LevelFailed");
 		}
 		else
 		{
@@ -373,34 +379,18 @@ public class ControlCube : MonoBehaviour
 		// yield return new WaitForSeconds(0.02f);
 		isCubeRotate = false;
 		yield return StartCoroutine("ResetCubeGraphicRotation");
-		
+
 		// StartCoroutine("ResetCubeGraphicRotation");
 		// transform.GetChild(1).rotation = Quaternion.Euler(0,0,0);
 	}
 	void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.F1) || transform.position.y < -15 )
-		{
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-		}
-		if(Input.GetKeyDown(KeyCode.F2) || transform.position.y > 15)
-		{
-			if(SceneManager.GetActiveScene().name == "Level1")
-				SceneManager.LoadScene("Level2");
-			else if(SceneManager.GetActiveScene().name == "Level2")
-				SceneManager.LoadScene("Level3");
-			else if(SceneManager.GetActiveScene().name == "Level3")
-				SceneManager.LoadScene("Level4");
-			else
-				Application.Quit();
-		}
-
 		if(transform.position.y < -0.2 && transform.position.y > -0.3)
 			isCubeOnLand = true;
 		else
 			isCubeOnLand = false;
 
-		if(isCubeOnLand && !isCubeRotate)
+		if(isCubeOnLand && !isCubeRotate && moveCountControlSc.MoveCount > 0)
 		{
 			if(Input.GetKeyDown(KeyCode.LeftArrow))
 			{
