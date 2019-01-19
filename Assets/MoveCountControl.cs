@@ -27,6 +27,7 @@ public class MoveCountControl : MonoBehaviour
 	public static bool isLevelComplete;
 	private void Start()
 	{
+
 		Screen.SetResolution(1280, 720,  true);     /*가로 뷰 */
 		isLevelComplete = false;
 		MoveCount = maxMoveCount;
@@ -34,8 +35,10 @@ public class MoveCountControl : MonoBehaviour
 		blackMask = GameObject.Find("BlackMask").GetComponent<Image>();
 		moveCountText = UICube.transform.GetChild(1).GetComponent<Text>();
 		moveCountText.text = moveCount.ToString();
-		blackMask.gameObject.SetActive(false);
+		blackMask.gameObject.SetActive(true);
+		blackMask.color = Color.black;
 		// gameObject.GetComponent<MoveCountControl>().OnVariableChange += VariableChangeHandler;
+		StartCoroutine("LevelStart");
 	}
 	public void MoveCube()
 	{
@@ -54,5 +57,17 @@ public class MoveCountControl : MonoBehaviour
 			yield return new WaitForFixedUpdate();
 		}
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+	}
+
+	public IEnumerator LevelStart()
+	{
+		blackMask.gameObject.SetActive(true);
+		int length = 50;
+		for (int i = 0; i < length; i++)
+		{
+			blackMask.color = Color.Lerp(Color.black,Color.clear, i * 0.02f);
+			yield return new WaitForFixedUpdate();
+		}
+		blackMask.gameObject.SetActive(false);
 	}
 }

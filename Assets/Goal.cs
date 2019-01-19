@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class Goal : MonoBehaviour
 {
@@ -29,14 +30,17 @@ public class Goal : MonoBehaviour
 		Light cubeLight = other.transform.GetChild(1).GetChild(0).GetComponent<Light>();
 		ParticleSystem cubeParticle = other.transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
 		ParticleSystem.MainModule main = cubeParticle.main;
-		
+		Image blackMask = GameObject.Find("Main").GetComponent<MoveCountControl>().blackMask;
+
 		gameObject.GetComponent<MeshRenderer>().enabled = false;
 		gameObject.transform.GetChild(0).gameObject.SetActive(false);
 		gameObject.transform.GetChild(1).gameObject.SetActive(false);
+		gameObject.transform.GetChild(2).gameObject.SetActive(true);
+
 		other.GetComponent<ControlCube>().isCubeRotate = true;
 		other.GetComponent<Rigidbody>().useGravity = false;
 		other.GetComponent<Rigidbody>().freezeRotation = false;
-
+		
 		for (int i = 0; i < 10; i++)
 		{
 			other.transform.position = other.transform.position + new Vector3(0, 0.1f, 0);
@@ -57,6 +61,23 @@ public class Goal : MonoBehaviour
 			yield return new WaitForFixedUpdate();
 		}
 		yield return new WaitUntil(() => other.transform.position.y > 15);
+		
+		blackMask.gameObject.SetActive(true);
+		int length = 50;
+		for (int i = 0; i < length; i++)
+		{
+			blackMask.color = Color.Lerp(Color.clear, Color.black, i * 0.02f);
+			yield return new WaitForFixedUpdate();
+		}
+		for (int i = 0; i < 50; i++)
+		{
+			gameObject.transform.GetChild(2).localScale = Vector3.Lerp(Vector3.one, new Vector3(0,.5f,0), i * 0.02f);
+			yield return new WaitForFixedUpdate();
+		}
+		gameObject.transform.GetChild(2).gameObject.SetActive(false);
+		yield return new WaitForSeconds(1f);
+		// blackMask.gameObject.SetActive(false);
+
 		LoadNextLevel();
 
 
@@ -73,6 +94,14 @@ public class Goal : MonoBehaviour
 			SceneManager.LoadScene("Level4");
 		else if (SceneManager.GetActiveScene().name == "Level4")
 			SceneManager.LoadScene("Level5");
+		else if (SceneManager.GetActiveScene().name == "Level5")
+			SceneManager.LoadScene("Level6");
+		else if (SceneManager.GetActiveScene().name == "Level6")
+			SceneManager.LoadScene("Level7");
+		else if (SceneManager.GetActiveScene().name == "Level7")
+			SceneManager.LoadScene("Level8");
+		else if (SceneManager.GetActiveScene().name == "Level8")
+			SceneManager.LoadScene("Level9");
 		else
 			Application.Quit();
 	}

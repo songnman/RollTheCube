@@ -1024,7 +1024,7 @@ PrefabInstance:
     - target: {fileID: 245401964297788122, guid: bd6f621faa13e044fb8ea40410ae71b9,
         type: 3}
       propertyPath: maxMoveCount
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd6f621faa13e044fb8ea40410ae71b9, type: 3}
@@ -1771,23 +1771,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4398327684031354579, guid: 956e8ac757e2f4648886279dc4a6771c,
         type: 3}
-      propertyPath: divideNumList.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4398327684031354579, guid: 956e8ac757e2f4648886279dc4a6771c,
-        type: 3}
-      propertyPath: divideNum
+      propertyPath: oriKeepUpTime
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4398327684031354579, guid: 956e8ac757e2f4648886279dc4a6771c,
-        type: 3}
-      propertyPath: divideNumList.Array.data[0]
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4398327683934726078, guid: 956e8ac757e2f4648886279dc4a6771c,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 956e8ac757e2f4648886279dc4a6771c, type: 3}
