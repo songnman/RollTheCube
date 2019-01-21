@@ -14,6 +14,10 @@ public class CubeEdge : MonoBehaviour
 			isTriggerOn = true;
 			triggerCount++;
 		}
+		else if(other.tag == "Land")
+		{
+			// Resources.Load("ShrinkSquare");
+		}
 	}
 	private void OnTriggerExit(Collider other) 
 	{

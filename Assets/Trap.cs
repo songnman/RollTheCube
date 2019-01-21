@@ -47,7 +47,7 @@ public class Trap : MonoBehaviour
 		int moveDist = 2;
 		originalLocalPosition = transform.GetChild(0).transform.localPosition;
 		
-		transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
+		// transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
 		for (int i = 0; i < repeat; i++)
 		{
 			transform.GetChild(0).transform.localPosition = Vector3.Lerp(originalLocalPosition,originalLocalPosition + new Vector3(0, moveDist * direction, 0),i * 0.1f);
@@ -105,11 +105,11 @@ public class Trap : MonoBehaviour
 	}
 	private void LightOn()
 	{
-		if (keepUpTime == 1 )
-		{
-				lightList.ForEach(x => {x.transform.localScale = Vector3.zero;});
-		}
-		else if (keepUpTime < 1 ) // [2019-01-17 13:34:33] 발판이 내려간 시간만큼 녹색불로 표시한다.
+		// if (keepUpTime == 1 )
+		// {
+		// 		lightList.ForEach(x => {x.transform.localScale = Vector3.zero;});
+		// }
+		if (keepUpTime < 1 ) // [2019-01-17 13:34:33] 발판이 내려간 시간만큼 녹색불로 표시한다.
 		{
 			// lightList.ForEach(x => {x.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);});
 			// lightList.ForEach(x => {x.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.black);});
@@ -135,7 +135,7 @@ public class Trap : MonoBehaviour
 			lightList.ForEach(x => {x.transform.localScale = Vector3.zero;});
 			
 
-			for (int i = 0; i < keepUpTime - 1; i++)
+			for (int i = 0; i < keepUpTime ; i++)
 			{
 				lightList[i].transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 				lightList[i].GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
@@ -168,8 +168,8 @@ public class Trap : MonoBehaviour
 		
 		LightOn();
 
-		if(keepUpTime == 1)
-			transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
+		// if(keepUpTime == 1)
+		// 	transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
 
 		if(keepUpTime == 0)
 			{

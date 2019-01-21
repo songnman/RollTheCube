@@ -1550,7 +1550,7 @@ PrefabInstance:
     - target: {fileID: 245401964297788122, guid: bd6f621faa13e044fb8ea40410ae71b9,
         type: 3}
       propertyPath: maxMoveCount
-      value: 18
+      value: 16
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd6f621faa13e044fb8ea40410ae71b9, type: 3}

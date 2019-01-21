@@ -88,6 +88,73 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1000, y: 1000, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1956435520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1956435521}
+  - component: {fileID: 1956435522}
+  - component: {fileID: 1956435524}
+  m_Layer: 5
+  m_Name: MouseMask
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1956435521
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956435520}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8720488582911476200}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1956435522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956435520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9082be1ee9ed2064883abc401542055d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  touchStartPosition: {x: 0, y: 0, z: 0}
+  touchInputPosition: {x: 0, y: 0, z: 0}
+  mouseInputPosition: {x: 0, y: 0, z: 0}
+  xPosition: 0
+  yPosition: 0
+  surfaceList: []
+  surfaceListTriggerOn: []
+  surfaceEdgeList: []
+  isCubeRotate: 0
+  isCubeOnLand: 0
+--- !u!222 &1956435524
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956435520}
+  m_CullTransparentMesh: 0
 --- !u!1 &8720488582911476183
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +187,7 @@ RectTransform:
   m_Children:
   - {fileID: 8720488583620760959}
   - {fileID: 1895596482}
+  - {fileID: 1956435521}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 40, y: -45.000004, z: 0}

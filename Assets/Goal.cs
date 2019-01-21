@@ -37,7 +37,7 @@ public class Goal : MonoBehaviour
 		gameObject.transform.GetChild(1).gameObject.SetActive(false);
 		gameObject.transform.GetChild(2).gameObject.SetActive(true);
 
-		other.GetComponent<ControlCube>().isCubeRotate = true;
+		// other.GetComponent<ControlCube>().isCubeRotate = true;
 		other.GetComponent<Rigidbody>().useGravity = false;
 		other.GetComponent<Rigidbody>().freezeRotation = false;
 		
