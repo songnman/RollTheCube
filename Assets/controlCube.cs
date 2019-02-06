@@ -80,14 +80,14 @@ public class ControlCube : MonoBehaviour
 					if (xPosition * yPosition > 0)
 					{
 						// if( Mathf.Abs(cubeGraphic.transform.rotation.x) < 0.2f)
-							cubeGraphic.transform.localRotation = Quaternion.Euler((touchDirection.y) * 0.2f, 0, (touchDirection.x) * 0.00f);
-							cubeGraphic.transform.localPosition = new Vector3((touchDirection.y) * 0.00f, 0.1f, (touchDirection.x) * 0.003f);
+							cubeGraphic.transform.localRotation = Quaternion.Euler((touchDirection.y) * 0.05f, 0, (touchDirection.x) * 0.00f);
+							cubeGraphic.transform.localPosition = new Vector3((touchDirection.y) * 0.00f, 0.1f, (touchDirection.x) * 0.0005f);
 					}
 					else
 					{
 						// if(Mathf.Abs(cubeGraphic.transform.rotation.z) < 0.2)
-							cubeGraphic.transform.localRotation = Quaternion.Euler((touchDirection.y) * 0.00f, 0, (touchDirection.x) * -0.2f);
-							cubeGraphic.transform.localPosition = new Vector3((touchDirection.y) * -0.003f, 0.1f, (touchDirection.x) * 0.00f);
+							cubeGraphic.transform.localRotation = Quaternion.Euler((touchDirection.y) * 0.00f, 0, (touchDirection.x) * -0.05f);
+							cubeGraphic.transform.localPosition = new Vector3((touchDirection.y) * -0.0005f, 0.1f, (touchDirection.x) * 0.00f);
 					}
 				break;
 				
